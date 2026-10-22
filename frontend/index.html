@@ -1,0 +1,302 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#090b16" />
+  <title>AI Video Assistant</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-icon">▶</div>
+        <div>
+          <div class="brand-name">AI Video <span>Assistant</span></div>
+          <div class="brand-caption">Your intelligent video workspace</div>
+        </div>
+      </div>
+
+      <div class="nav-label">WORKSPACE</div>
+
+      <nav class="navigation" aria-label="Main navigation">
+        <button class="nav-item active" data-page="home"><span>⌂</span> Home</button>
+        <button class="nav-item" data-page="insights"><span>▤</span> Video Insights</button>
+        <button class="nav-item" data-page="chat"><span>◌</span> AI Chat</button>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <div class="workspace-card">
+          <div class="workspace-title"><span class="status-dot"></span> Your workspace</div>
+          <p>Turn videos into searchable knowledge with AI-powered insights.</p>
+          <div class="session-status" id="sessionStatus">No video analyzed yet</div>
+        </div>
+
+        <button class="reset-button" id="resetButton">↻ <span>Reset workspace</span></button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <button class="mobile-menu" id="mobileMenu" aria-label="Toggle menu">☰</button>
+        <div class="breadcrumb">
+          <span>Workspace</span>
+          <span class="crumb-divider">/</span>
+          <strong id="currentSection">Home</strong>
+        </div>
+        <div class="topbar-right"><span class="online-dot"></span><span>AI workspace</span></div>
+      </header>
+
+      <div class="page-wrap">
+        <!-- HOME PAGE -->
+        <section class="page active" id="page-home">
+          <div class="hero">
+            <div class="hero-content">
+              <div class="eyebrow"><span>✦</span> AI-POWERED VIDEO INTELLIGENCE</div>
+              <h1>Your <span class="gradient-text">AI Video<br class="desktop-break" /> Assistant</span></h1>
+              <p class="hero-description">
+                Turn long videos into useful knowledge. Generate summaries, extract key decisions and action items, and ask questions about your content — all in one place.
+              </p>
+              <div class="hero-pills">
+                <span>✧ Smart summaries</span>
+                <span>✧ Actionable insights</span>
+                <span>✧ RAG-powered chat</span>
+              </div>
+            </div>
+
+            <div class="hero-art" aria-hidden="true">
+              <div class="orbit orbit-one"></div>
+              <div class="orbit orbit-two"></div>
+              <div class="hero-play">🎬</div>
+              <div class="floating-chip chip-one">✦ AI insights</div>
+              <div class="floating-chip chip-two">▤ Transcript</div>
+            </div>
+
+            <div class="hero-glow"></div>
+          </div>
+
+          <div class="section-heading">
+            <div>
+              <div class="section-kicker">GET STARTED</div>
+              <h2>Analyze your video</h2>
+              <p>Paste a YouTube link or upload a local media file.</p>
+            </div>
+            <div class="step-badge"><span>01</span> Input source</div>
+          </div>
+
+          <div class="analyzer-card">
+            <div class="source-tabs">
+              <button class="source-tab active" data-source="youtube"><span>↗</span> YouTube URL</button>
+              <button class="source-tab" data-source="file"><span>⇧</span> Upload a file</button>
+            </div>
+
+            <form id="analyzeForm">
+              <div class="field-group" id="urlGroup">
+                <label for="videoUrl">YouTube video URL</label>
+                <div class="input-wrap">
+                  <span class="input-icon">↗</span>
+                  <input id="videoUrl" name="url" type="url" placeholder="https://www.youtube.com/watch?v=..." />
+                </div>
+                <small>Make sure the video is accessible and has audio.</small>
+              </div>
+
+              <div class="field-group hidden" id="fileGroup">
+                <label for="videoFile">Audio or video file</label>
+                <label class="upload-zone" for="videoFile" id="uploadZone">
+                  <span class="upload-icon">⇧</span>
+                  <strong id="uploadTitle">Drop your file here or browse</strong>
+                  <span id="uploadSubtitle">MP3, WAV, M4A, MP4, MOV, MKV, WEBM</span>
+                  <input id="videoFile" type="file" accept=".mp3,.wav,.m4a,.ogg,.mp4,.mov,.mkv,.webm,.mpeg,.mpga" />
+                </label>
+              </div>
+
+              <div class="form-bottom">
+                <div class="field-group language-field">
+                  <label for="language">Transcription language</label>
+                  <select id="language" name="language">
+                    <option value="english">🇬🇧 English</option>
+                    <option value="hinglish">🇮🇳 Hinglish</option>
+                  </select>
+                </div>
+
+                <button class="primary-button analyze-button" id="analyzeButton" type="submit">
+                  <span>✦</span> Analyze video <span class="button-arrow">→</span>
+                </button>
+              </div>
+
+              <div class="progress-area hidden" id="progressArea">
+                <div class="spinner"></div>
+                <div>
+                  <strong>Working on your video...</strong>
+                  <p>Transcribing audio and generating AI insights. This can take a few minutes.</p>
+                </div>
+              </div>
+
+              <div class="notice hidden" id="notice" role="status"></div>
+            </form>
+          </div>
+
+          <div class="feature-grid">
+            <article class="feature-card">
+              <div class="feature-icon purple">▤</div>
+              <h3>Smart summaries</h3>
+              <p>Understand long videos without watching every minute.</p>
+              <span class="feature-number">01</span>
+            </article>
+
+            <article class="feature-card">
+              <div class="feature-icon blue">✓</div>
+              <h3>Actionable insights</h3>
+              <p>Pull out action items, key decisions and open questions.</p>
+              <span class="feature-number">02</span>
+            </article>
+
+            <article class="feature-card">
+              <div class="feature-icon pink">✧</div>
+              <h3>Ask your video</h3>
+              <p>Chat with your content using retrieval-augmented generation.</p>
+              <span class="feature-number">03</span>
+            </article>
+          </div>
+
+          <!-- UPDATED FOOTER -->
+          <footer class="footer">
+            <p>AI Video Assistant <span>·</span> Built to turn content into clarity</p>
+            <p class="developer-credit">Developed with ❤️ by <span>Shiwam</span></p>
+          </footer>
+        </section>
+
+        <!-- VIDEO INSIGHTS PAGE -->
+        <section class="page" id="page-insights">
+          <div class="page-heading">
+            <div class="eyebrow"><span>✦</span> YOUR RESULTS</div>
+            <h1>Video <span class="gradient-text">Insights</span></h1>
+            <p>Your video's key takeaways, organized in one place.</p>
+          </div>
+
+          <div class="empty-state" id="insightsEmpty">
+            <div class="empty-icon">▤</div>
+            <h2>No insights yet</h2>
+            <p>Analyze a video on the Home page to see its summary, decisions and transcript here.</p>
+            <button class="primary-button" data-go="home">Analyze a video <span>→</span></button>
+          </div>
+
+          <div id="insightsContent" class="hidden">
+            <div class="result-title-row">
+              <div>
+                <div class="section-kicker">ANALYSIS REPORT</div>
+                <h2 id="resultTitle">Video Analysis</h2>
+              </div>
+              <span class="ready-badge"><span class="status-dot"></span> Analysis ready</span>
+            </div>
+
+            <div class="metrics-grid">
+              <div class="metric-card"><span>CONTENT SUMMARY</span><strong>Ready</strong><small>AI-generated overview</small></div>
+              <div class="metric-card"><span>TRANSCRIPT</span><strong id="transcriptCount">0</strong><small>Characters transcribed</small></div>
+              <div class="metric-card"><span>AI CHAT</span><strong>Active</strong><small>Ask follow-up questions</small></div>
+            </div>
+
+            <div class="result-tabs" role="tablist">
+              <button class="result-tab active" data-result="summary">Summary</button>
+              <button class="result-tab" data-result="actions">Action items</button>
+              <button class="result-tab" data-result="decisions">Key decisions</button>
+              <button class="result-tab" data-result="questions">Open questions</button>
+              <button class="result-tab" data-result="transcript">Transcript</button>
+            </div>
+
+            <article class="result-panel">
+              <div class="result-panel-heading">
+                <h3 id="resultPanelTitle">Video summary</h3>
+                <button class="subtle-button" id="copyResult">Copy text</button>
+              </div>
+              <div class="result-text" id="resultText"></div>
+              <textarea class="transcript-box hidden" id="transcriptBox" readonly></textarea>
+              <div class="download-row hidden" id="downloadRow">
+                <button class="secondary-button" id="downloadTranscript">↓ Download transcript</button>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <!-- AI CHAT PAGE -->
+        <section class="page" id="page-chat">
+          <div class="page-heading">
+            <div class="eyebrow"><span>✦</span> CONVERSATION</div>
+            <h1>Chat with your <span class="gradient-text">video</span></h1>
+            <p>Ask questions and explore your content with your RAG assistant.</p>
+          </div>
+
+          <div class="chat-layout">
+            <div class="chat-main">
+              <div class="chat-topline">
+                <div class="assistant-avatar">✦</div>
+                <div>
+                  <strong>AI Video Assistant</strong>
+                  <small><span class="status-dot"></span> Ready to help</small>
+                </div>
+                <button class="subtle-button clear-chat" id="clearChat">Clear chat</button>
+              </div>
+
+              <div class="chat-messages" id="chatMessages">
+                <div class="chat-welcome">
+                  <div class="welcome-orb">✦</div>
+                  <h2>Let's explore your video</h2>
+                  <p>Once you've analyzed a video, ask me about its main ideas, decisions, or details.</p>
+                  <div class="suggestion-list">
+                    <button class="suggestion" data-question="What is the main idea of this video?">What is the main idea of this video? <span>↗</span></button>
+                    <button class="suggestion" data-question="Summarize the most important points.">Summarize the most important points. <span>↗</span></button>
+                    <button class="suggestion" data-question="What action items or decisions were mentioned?">What action items or decisions were mentioned? <span>↗</span></button>
+                  </div>
+                </div>
+              </div>
+
+              <form class="chat-composer" id="chatForm">
+                <input id="chatInput" type="text" placeholder="Ask anything about your video..." autocomplete="off" />
+                <button type="submit" id="sendButton" aria-label="Send message">↑</button>
+              </form>
+
+              <div class="chat-footnote">AI-generated answers may be inaccurate. Verify important information.</div>
+            </div>
+
+            <aside class="chat-context">
+              <div class="context-heading"><span>▤</span> VIDEO CONTEXT</div>
+
+              <div id="chatContextEmpty">
+                <div class="context-placeholder">▧</div>
+                <p>No video loaded yet.</p>
+                <button class="text-button" data-go="home">Analyze a video →</button>
+              </div>
+
+              <div id="chatContext" class="hidden">
+                <div class="context-file">🎬</div>
+                <strong id="contextTitle">Video title</strong>
+                <p>Analysis available for questions.</p>
+                <div class="context-status"><span class="status-dot"></span> Connected to RAG</div>
+              </div>
+
+              <div class="context-tip">
+                <span>✧</span>
+                <div>
+                  <strong>Tip</strong>
+                  <p>Ask specific questions for more useful answers.</p>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status"></div>
+
+  <script src="/static/script.js"></script>
+</body>
+</html>
