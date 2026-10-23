@@ -1,3 +1,4 @@
+
 import re
 from urllib.parse import urlparse, parse_qs
 
@@ -20,10 +21,10 @@ load_dotenv()
 
 def get_youtube_video_id(url: str) -> str:
     """Extract the 11-character video ID from common YouTube URLs."""
-    parsed = urlparse(url)
-    host = parsed.netloc.lower().split(":")[0]
+    parsed = urlparse(url.strip())
+    host = (parsed.hostname or "").lower()
 
-    if host == "youtu.be" or host.endswith(".youtu.be"):
+    if host == "youtu.be":
         video_id = parsed.path.strip("/").split("/")[0]
 
     elif host == "youtube.com" or host.endswith(".youtube.com"):
@@ -46,12 +47,12 @@ def get_youtube_video_id(url: str) -> str:
 
 
 def get_youtube_transcript(url: str, language: str) -> str:
-    """Fetch accessible YouTube captions."""
+    """Fetch available YouTube captions."""
     video_id = get_youtube_video_id(url)
 
     languages = (
         ["hi", "en"]
-        if language == "hinglish"
+        if language.lower() == "hinglish"
         else ["en", "hi"]
     )
 
@@ -63,32 +64,45 @@ def get_youtube_transcript(url: str, language: str) -> str:
     ).strip()
 
     if not transcript:
-        raise ValueError("The video transcript is empty.")
+        raise ValueError("The YouTube transcript is empty.")
 
     return transcript
 
 
 def run_pipeline(source: str, language: str = "english") -> dict:
-    print("Starting AI Video Assistant")
+    print("Starting AI Video Assistant", flush=True)
 
     transcript = None
 
     if source.startswith(("http://", "https://")):
-        print("Trying YouTube transcript first...")
+        print("Trying YouTube transcript first...", flush=True)
 
         try:
             transcript = get_youtube_transcript(source, language)
-            print("YouTube transcript fetched successfully.")
+            print("YouTube transcript fetched successfully.", flush=True)
 
         except Exception as exc:
-            print(f"Transcript unavailable: {exc}")
-            print("Trying the existing audio-processing workflow...")
+            print(
+                "Transcript unavailable: "
+                f"{type(exc).__name__}: {repr(exc)}",
+                flush=True,
+            )
+            print(
+                "Trying the existing audio-processing workflow...",
+                flush=True,
+            )
 
     if transcript is None:
         chunks = process_input(source)
         transcript = transcribe_all(chunks, language)
 
-    print(f"Raw transcription (first 300 characters): {transcript[:300]}")
+    if not transcript or not transcript.strip():
+        raise ValueError("No transcript or transcription was generated.")
+
+    print(
+        f"Raw transcription (first 300 characters): {transcript[:300]}",
+        flush=True,
+    )
 
     title = generate_title(transcript)
     summary = summarize(transcript)
@@ -110,7 +124,10 @@ def run_pipeline(source: str, language: str = "english") -> dict:
 
 if __name__ == "__main__":
     source = input("Enter YouTube URL or local file path: ").strip()
-    language = input("Language (english/hinglish): ").strip().lower() or "english"
+    language = (
+        input("Language (english/hinglish): ").strip().lower()
+        or "english"
+    )
 
     result = run_pipeline(source, language)
 
@@ -128,7 +145,7 @@ if __name__ == "__main__":
     while True:
         question = input("You: ").strip()
 
-        if question.lower() in ["exit", "quit", "q"]:
+        if question.lower() in {"exit", "quit", "q"}:
             print("Goodbye!")
             break
 
