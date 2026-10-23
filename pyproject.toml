@@ -16,5 +16,6 @@ dependencies = [
     "python-multipart>=0.0.32",
     "sentence-transformers>=6.2.0",
     "uvicorn[standard]>=0.54.0",
+    "youtube-transcript-api>=1.2.4",
     "yt-dlp>=2026.10.21",
 ]
