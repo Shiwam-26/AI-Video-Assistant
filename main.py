@@ -93,8 +93,15 @@ def run_pipeline(source: str, language: str = "english") -> dict:
             )
 
     if transcript is None:
-        chunks = process_input(source)
-        transcript = transcribe_all(chunks, language)
+     if source.startswith(("http://", "https://")):
+        raise RuntimeError(
+            "YouTube could not provide captions to this server. "
+            "Please use Upload a file to analyze your video, "
+            "or try a video with accessible captions."
+        )
+
+    chunks = process_input(source)
+    transcript = transcribe_all(chunks, language)
 
     if not transcript or not transcript.strip():
         raise ValueError("No transcript or transcription was generated.")
